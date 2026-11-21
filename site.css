@@ -581,3 +581,8 @@ footer a.ct-ad{display:block;transition:color .25s}footer a.ct-ad:hover{color:va
 footer .cols{grid-template-columns:1fr 1fr 1fr}footer .cols a+a{margin-left:14px}
 @media (max-width:620px){footer .cols{grid-template-columns:1fr 1fr}}
 #intro .nm-l,#intro .nm.done .nm-l{font-weight:600!important;transition:none}
+footer .ct-so{display:flex;gap:14px;margin-top:22px}
+footer .ct-so a{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--rule);border-radius:50%;color:var(--ink);transition:color .2s,border-color .2s}
+footer .ct-so a:hover{color:var(--accent);border-color:var(--accent)}
+footer .ct-so svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}footer .ct-so svg .f{fill:currentColor;stroke:none}
+footer .cols{grid-template-columns:1fr 1fr}
