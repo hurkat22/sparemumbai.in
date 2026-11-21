@@ -573,3 +573,4 @@ footer a.ct-ad{display:block;transition:color .25s}footer a.ct-ad:hover{color:va
 .tsq{margin:0 0 clamp(32px,5vw,60px);max-width:22em}
 .tsq p{margin:0;font-size:var(--t-l);line-height:1.15;letter-spacing:-.02em}
 .tsq cite{display:block;margin-top:14px;font-style:normal;color:var(--accent);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.tsf img{aspect-ratio:auto;object-fit:contain;height:auto}
