@@ -72,9 +72,9 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
 
 // ---------- hover preview that follows the cursor (people, wards) ----------
 { const ph = $("#ph"); if (ph) $$("[data-hover]").forEach(p => {
-    p.addEventListener("mouseenter", () => { const src = p.dataset.img; ph.innerHTML = src ? `<img src="${src}" alt="">` : "Photo"; ph.classList.add("on"); });
+    p.addEventListener("mouseenter", () => { if (p.closest("details")?.open) return; const src = p.dataset.img; ph.innerHTML = src ? `<img src="${src}" alt="">` : "Photo"; ph.classList.add("on"); });
     p.addEventListener("mouseleave", () => ph.classList.remove("on"));
-    p.addEventListener("mousemove", e => { ph.style.left = e.clientX + "px"; ph.style.top = e.clientY + "px"; }); }); }
+    p.addEventListener("mousemove", e => { if (p.closest("details")?.open) { ph.classList.remove("on"); return; } if (!ph.classList.contains("on")) { const src = p.dataset.img; ph.innerHTML = src ? `<img src="${src}" alt="">` : "Photo"; ph.classList.add("on"); } ph.style.left = e.clientX + "px"; ph.style.top = e.clientY + "px"; }); }); }
 
 // ---------- red cursor ----------
 { const c = document.createElement("div"); c.id = "cur"; c.innerHTML = "<span>View</span>"; document.body.appendChild(c); const lab = $("span", c);
@@ -158,3 +158,5 @@ if (location.hash.length > 1) { const fix = () => { const t = document.getElemen
 { const st = document.querySelector(".about .st"); if (st) { $$(".w", st).forEach((w, i) => w.style.transitionDelay = (i * 22) + "ms");
   new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { st.classList.add("lit"); o.disconnect(); } }, { threshold: .2 }).observe(st);
   if (location.hash === "#about") st.classList.add("lit"); } }
+// people: no hover photo while a row is open
+$$("details.pp").forEach(d => d.addEventListener("toggle", () => { const ph = $("#ph"); if (ph && d.open) ph.classList.remove("on"); }));
