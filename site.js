@@ -122,3 +122,12 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
   tr.addEventListener("wheel", e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { e.preventDefault(); if (!tr._lock) { tr._lock = 1; go(e.deltaY > 0 ? 1 : -1); setTimeout(() => tr._lock = 0, 650); } } }, { passive: false });
   addEventListener("keydown", e => { if (!V.classList.contains("on")) return; if (e.key === "Escape") close(); if (e.key === "ArrowRight") go(1); if (e.key === "ArrowLeft") go(-1); });
 } }
+
+// ---------- mobile menu ----------
+{ const h = $("#hdr"), b = $(".mbtn", h); if (b) {
+  const set = o => { h.classList.toggle("open", o); document.documentElement.classList.toggle("menu-open", o); b.setAttribute("aria-expanded", o); b.textContent = o ? "Close" : "Menu"; };
+  b.addEventListener("click", () => set(!h.classList.contains("open")));
+  $$("nav a", h).forEach(a => a.addEventListener("click", () => set(false)));
+  addEventListener("keydown", e => { if (e.key === "Escape") set(false); });
+  // keep header visible while menu open
+  new MutationObserver(() => { if (h.classList.contains("open") && h.classList.contains("hide")) h.classList.remove("hide"); }).observe(h, { attributes: true, attributeFilter: ["class"] }); } }
