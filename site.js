@@ -153,3 +153,8 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
 // ---------- land exactly on #anchors (e.g. Contact) after the page settles ----------
 if (location.hash.length > 1) { const fix = () => { const t = document.getElementById(location.hash.slice(1)); if (t) { $$(".rv,.big,.bw").forEach(e => e.classList.add("in")); t.scrollIntoView({ block: "start" }); } };
   addEventListener("load", () => { fix(); setTimeout(fix, 400); setTimeout(fix, 1200); }); addEventListener("intro:done", () => setTimeout(fix, 100)); }
+
+// ---------- About statement: light up quickly once in view (no scroll needed) ----------
+{ const st = document.querySelector(".about .st"); if (st) { $$(".w", st).forEach((w, i) => w.style.transitionDelay = (i * 22) + "ms");
+  new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { st.classList.add("lit"); o.disconnect(); } }, { threshold: .2 }).observe(st);
+  if (location.hash === "#about") st.classList.add("lit"); } }
