@@ -580,3 +580,4 @@ footer a.ct-ad{display:block;transition:color .25s}footer a.ct-ad:hover{color:va
 @media (max-width:820px){.tsf{grid-template-columns:1fr}}
 footer .cols{grid-template-columns:1fr 1fr 1fr}footer .cols a+a{margin-left:14px}
 @media (max-width:620px){footer .cols{grid-template-columns:1fr 1fr}}
+#intro .nm-l,#intro .nm.done .nm-l{font-weight:600!important;transition:none}
