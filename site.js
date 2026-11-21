@@ -160,3 +160,25 @@ if (location.hash.length > 1) { const fix = () => { const t = document.getElemen
   if (location.hash === "#about") st.classList.add("lit"); } }
 // people: no hover photo while a row is open
 $$("details.pp").forEach(d => d.addEventListener("toggle", () => { const ph = $("#ph"); if (ph && d.open) ph.classList.remove("on"); }));
+
+// ---------- warm the cache: while the intro plays, quietly fetch the other pages and their images ----------
+(() => {
+  const c = navigator.connection; if (c && (c.saveData || /2g/.test(c.effectiveType || ""))) return;
+  const here = location.pathname.split("/").pop() || "index.html";
+  const pages = ["people.html","publications.html","exhibitions.html","temporal-spaces.html","iitb-guidelines.html","mumbai-aqi.html","open-bandra.html","index.html"].filter(p => p !== here && p.replace(".html","") !== here);
+  const seen = new Set(), q = [];
+  const img = src => { if (seen.has(src)) return; seen.add(src); q.push(src); };
+  $$("img[data-src]").forEach(i => img(i.dataset.src));
+  const pump = () => { let n = 0; const next = () => { const s = q.shift(); if (!s) return; n++; const i = new Image(); i.decoding = "async"; i.onload = i.onerror = () => { n--; next(); }; i.src = s; }; for (let k = 0; k < 4; k++) next(); };
+  const go = async () => {
+    for (const p of pages) {
+      try {
+        const h = await fetch(p, { priority: "low" }).then(r => r.ok ? r.text() : "");
+        h.replace(/<img[^>]+?(?:data-src|src)="([^"]+)"/g, (_, s) => { if (!/^(https?:|data:)/.test(s)) img(s); return _; });
+      } catch (e) {}
+    }
+    pump();
+  };
+  const start = () => (window.requestIdleCallback ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 600));
+  if (document.readyState === "complete") start(); else addEventListener("load", start);
+})();
