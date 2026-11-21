@@ -558,3 +558,18 @@ footer .cols{grid-template-columns:1fr 1fr}
 #intro .nm-c{display:none!important}
 footer a.ct-ad{display:block;transition:color .25s}footer a.ct-ad:hover{color:var(--accent)}
 .about .st.lit .w{opacity:1!important}
+/* four work cards + temporal spaces page */
+.work.w4{grid-template-columns:repeat(4,1fr)}
+@media (max-width:1100px){.work.w4{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.work.w4{grid-template-columns:1fr;row-gap:36px}}
+.vid{position:relative;aspect-ratio:16/9;background:#111;margin:0 0 clamp(36px,6vw,72px)}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.tsg{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,4vw,56px);margin-bottom:clamp(36px,6vw,72px)}
+.tsg .mono,.tsc .mono{display:block;color:var(--soft);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.tsg p{margin:0;font-size:var(--t-m);line-height:1.45}
+.tsc{display:grid;grid-template-columns:2fr 2fr 1fr;gap:var(--g);border-top:1px solid var(--rule);padding-top:18px}
+.tsc p{margin:0;font-size:15px;line-height:1.45}.tsc a{border-bottom:1px solid var(--accent)}
+@media (max-width:820px){.tsg,.tsc{grid-template-columns:1fr;gap:22px}}
+.tsq{margin:0 0 clamp(32px,5vw,60px);max-width:22em}
+.tsq p{margin:0;font-size:var(--t-l);line-height:1.15;letter-spacing:-.02em}
+.tsq cite{display:block;margin-top:14px;font-style:normal;color:var(--accent);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
