@@ -2,18 +2,14 @@
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-// ---------- page transitions: a quick glitch (≈0.3 s out, ≈0.3 s in) ----------
-{ const pt = document.createElement("div"); pt.id = "pt"; pt.setAttribute("aria-hidden", "true");
-  pt.innerHTML = '<div class="pt-h"><span></span></div><i class="pt-bar"></i>';
-  document.body.appendChild(pt); const h = pt.querySelector(".pt-h span"), hh = pt.querySelector(".pt-h");
-  const nameFor = a => a.dataset.title || (a.querySelector("h3,b") || a).textContent.replace(/[→↗]/g, "").trim().slice(0, 40) || "sPare";
-  const set = n => { h.textContent = n; hh.dataset.t = n; };
+// ---------- page transitions: a quick, clean white fade ----------
+{ const pt = document.createElement("div"); pt.id = "pt"; pt.setAttribute("aria-hidden", "true"); document.body.appendChild(pt);
   let prev = null; try { prev = sessionStorage.getItem("pt"); sessionStorage.removeItem("pt"); } catch (e) {}
-  if (prev && !RM) { set(prev); pt.className = "g out"; setTimeout(() => pt.className = "", 340); }
+  if (prev && !RM) { pt.className = "on"; requestAnimationFrame(() => requestAnimationFrame(() => pt.className = "")); }
   document.addEventListener("click", e => { const a = e.target.closest("a[href]"); if (!a || RM || e.metaKey || e.ctrlKey || a.target === "_blank" || a.classList.contains("logo")) return;
     const u = new URL(a.href, location.href); if (u.origin !== location.origin || u.pathname === location.pathname || /^mailto:/.test(a.href)) return;
-    e.preventDefault(); set(nameFor(a)); try { sessionStorage.setItem("pt", nameFor(a)); } catch (er) {}
-    pt.className = "g in"; setTimeout(() => location.href = a.href, 260); });
+    e.preventDefault(); try { sessionStorage.setItem("pt", "1"); } catch (er) {}
+    pt.className = "on"; setTimeout(() => location.href = a.href, 180); });
   addEventListener("pageshow", e => { if (e.persisted) pt.className = ""; }); }
 
 // ---------- stroke-field texture (stand-in until the new texture image arrives) ----------
