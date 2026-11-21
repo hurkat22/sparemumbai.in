@@ -543,3 +543,17 @@ details.pp .nm{transition:color .25s}
 #pt{position:fixed;inset:0;z-index:70;background:#fff;opacity:0;visibility:hidden;transform:none!important;pointer-events:none;transition:opacity .22s ease,visibility 0s .22s!important}
 #pt.on{opacity:1;visibility:visible;transition:opacity .18s ease!important}
 #pt>*{display:none!important}
+/* faster page heads */
+.ph .lede{transition:opacity .5s,transform .5s cubic-bezier(.2,.7,.1,1)}
+.rv{transition-duration:.6s,.7s}
+/* contact block */
+footer .ct{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(24px,5vw,80px);align-items:start;margin:8px 0 clamp(36px,6vw,72px)}
+footer .ct-by{margin:0;font-size:var(--t-l);line-height:1.15;letter-spacing:-.02em;max-width:18em;color:var(--olive)}
+footer .ct-mail{display:inline-block;font-size:var(--t-l);letter-spacing:-.02em;line-height:1.1;border-bottom:2px solid var(--accent);padding-bottom:4px;transition:color .25s}
+footer .ct-mail:hover{color:var(--accent)}
+footer .ct-ad{margin:22px 0 0;font-size:var(--t-m);line-height:1.4;max-width:24em}
+footer .ct-ad .mono{display:block;color:var(--soft);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+footer .cols{grid-template-columns:1fr 1fr}
+@media (max-width:820px){footer .ct{grid-template-columns:1fr;gap:22px}footer .ct-by,footer .ct-mail{font-size:22px}}
+#intro .nm-c{display:none!important}
+footer a.ct-ad{display:block;transition:color .25s}footer a.ct-ad:hover{color:var(--accent)}

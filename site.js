@@ -44,9 +44,9 @@ $$("[data-type]").forEach(h => { const h1 = $("h1", h) || h, cur = document.crea
   const walk = n => [...n.childNodes].forEach(c => { if (c.nodeType === 3) { const f = document.createDocumentFragment(); [...c.textContent].forEach(ch => { const x = document.createElement("span"); x.className = "tw"; x.textContent = ch; f.appendChild(x); chs.push(x); }); c.replaceWith(f); } else walk(c); });
   walk(h1);
   if (RM) { chs.forEach(c => c.classList.add("v")); h.classList.add("done"); return; }
-  let k = 0; const go = () => { if (k < chs.length) { const c = chs[k++]; c.classList.add("v"); c.after(cur); const ch = c.textContent; setTimeout(go, ch === " " ? 55 : ch === "." || ch === "," ? 260 : 26 + Math.random() * 40); } else h.classList.add("done"); };
+  let k = 0; const go = () => { if (k < chs.length) { const c = chs[k++]; c.classList.add("v"); c.after(cur); const ch = c.textContent; setTimeout(go, ch === " " ? 40 : ch === "." || ch === "," ? 160 : 16 + Math.random() * 22); } else h.classList.add("done"); };
   const waitI = document.getElementById("intro") && !document.documentElement.classList.contains("seen") && !RM;
-  if (waitI) { const st = () => setTimeout(go, 700); addEventListener("intro:done", st, { once: true }); } else setTimeout(go, sessionStorage.getItem("pt") ? 900 : 500); });
+  if (waitI) { const st = () => setTimeout(go, 700); addEventListener("intro:done", st, { once: true }); } else setTimeout(go, 150); });
 
 // ---------- count-up numbers ([data-count]) ----------
 { const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; io.unobserve(e.target); const el = e.target, to = +el.dataset.count, dec = (el.dataset.count.split(".")[1] || "").length, t0 = performance.now(), D = 1600;
@@ -149,3 +149,7 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
   // keep header visible while menu open
   new MutationObserver(() => { if (h.classList.contains("open") && h.classList.contains("hide")) h.classList.remove("hide"); }).observe(h, { attributes: true, attributeFilter: ["class"] }); } }
 
+
+// ---------- land exactly on #anchors (e.g. Contact) after the page settles ----------
+if (location.hash.length > 1) { const fix = () => { const t = document.getElementById(location.hash.slice(1)); if (t) { $$(".rv,.big,.bw").forEach(e => e.classList.add("in")); t.scrollIntoView({ block: "start" }); } };
+  addEventListener("load", () => { fix(); setTimeout(fix, 400); setTimeout(fix, 1200); }); addEventListener("intro:done", () => setTimeout(fix, 100)); }
