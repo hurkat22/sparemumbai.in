@@ -536,3 +536,4 @@ button.look:hover .cv.img img{transform:scale(1.03)}
 /* textured open map landing art (no outlines) */
 #intro .in-art img{left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:none;opacity:1;-webkit-mask-image:none;mask-image:none}
 #intro .nm-l{text-shadow:0 0 2px #fff,0 0 6px #fff,0 0 14px #fff,0 0 24px #fff,0 0 36px #fff}
+.big{font-size:clamp(56px,13vw,230px);white-space:nowrap}
