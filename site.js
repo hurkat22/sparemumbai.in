@@ -9,7 +9,7 @@ const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [..
   const nameFor = a => a.dataset.title || (a.querySelector("h3,b") || a).textContent.replace(/[→↗]/g, "").trim().slice(0, 40) || "sPare";
   const prev = sessionStorage.getItem("pt"); sessionStorage.removeItem("pt");
   if (prev && !RM) { h.textContent = prev; pt.classList.add("hold"); requestAnimationFrame(() => requestAnimationFrame(() => { pt.classList.remove("hold"); pt.classList.add("lift"); setTimeout(() => pt.className = "", 1100); })); }
-  document.addEventListener("click", e => { const a = e.target.closest("a[href]"); if (!a || RM || e.metaKey || e.ctrlKey || a.target === "_blank") return;
+  document.addEventListener("click", e => { const a = e.target.closest("a[href]"); if (!a || RM || e.metaKey || e.ctrlKey || a.target === "_blank" || a.classList.contains("logo")) return;
     const u = new URL(a.href, location.href); if (u.origin !== location.origin || u.pathname === location.pathname || /^mailto:/.test(a.href)) return;
     e.preventDefault(); const name = nameFor(a); h.textContent = name; sessionStorage.setItem("pt", name);
     pt.className = ""; requestAnimationFrame(() => pt.classList.add("in")); setTimeout(() => location.href = a.href, 900); });
@@ -83,7 +83,7 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
 { const c = document.createElement("div"); c.id = "cur"; c.innerHTML = "<span>View</span>"; document.body.appendChild(c); const lab = $("span", c);
   let x = -100, y = -100, cx = x, cy = y; addEventListener("mousemove", e => { x = e.clientX; y = e.clientY; });
   const loop = () => { cx += (x - cx) * .2; cy += (y - cy) * .2; c.style.transform = `translate(${cx}px,${cy}px) translate(-50%,-50%)`; requestAnimationFrame(loop); }; loop();
-  document.addEventListener("mouseover", e => { const card = e.target.closest("[data-cursor]"), a = e.target.closest("a,button");
+  document.addEventListener("mouseover", e => { let card = e.target.closest("[data-cursor]"); if (card && card.id === "bv" && e.target !== card) card = null; const a = e.target.closest("a,button");
     c.classList.toggle("big", !!card); if (card) c.dataset.l = card.dataset.cursor; c.classList.toggle("link", !card && !!a); });
   document.addEventListener("mouseleave", () => c.style.opacity = 0); document.addEventListener("mouseenter", () => c.style.opacity = 1); }
 
@@ -91,23 +91,42 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
 { const el = $("#clock"); if (el) { const f = () => { const d = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" })); let h = d.getHours(), m = d.getMinutes(), ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12;
   el.innerHTML = `${String(h).padStart(2, "0")}<span class="c">:</span>${String(m).padStart(2, "0")} ${ap} · Mumbai`; }; f(); setInterval(f, 20000); } }
 
-// ---------- landing: logo centre-stage, then it flies into the header ----------
+// ---------- landing: Sameep Padora + Associates → sP+a → + research → sPare → logo → header ----------
 { const I = document.getElementById("intro"); if (I && !document.documentElement.classList.contains("seen") && !RM) {
     document.body.style.overflow = "hidden";
+    const N = $(".nm", I), Lt = $(".nm-l", N), cap = $(".nm-c", N), W = ms => new Promise(r => setTimeout(r, ms));
     let done = false;
-    const go = () => { if (done) return; done = true; try { sessionStorage.setItem("seen", "1"); } catch (e) {}
+    const mk = (ch, cls = "") => { const s = document.createElement("span"); s.className = "c " + cls; s.textContent = ch; return s; };
+    const collapse = els => { els.forEach(s => { s.style.maxWidth = s.offsetWidth + "px"; }); void Lt.offsetWidth; els.forEach(s => s.classList.add("gone")); };
+    const swap = (s, ch) => { s.classList.add("flip"); setTimeout(() => { s.textContent = ch; s.classList.remove("flip"); s.style.maxWidth = ""; }, 200); };
+    const type = async (txt, cls) => { const out = []; for (const ch of txt) { if (done) return out; const s = mk(ch, cls); Lt.appendChild(s); out.push(s); await W(ch === " " ? 40 : 58); } return out; };
+    const say = t => { cap.classList.remove("in"); setTimeout(() => { cap.textContent = t; cap.classList.add("in"); }, 160); };
+    const go = async () => { if (done) return; done = true; try { sessionStorage.setItem("seen", "1"); } catch (e) {}
+      if (!I.classList.contains("logo-on")) { I.classList.add("logo-on"); await W(650); }
       const L = I.querySelector(".in-logo"), T = document.querySelector("header .logo").getBoundingClientRect(), r = L.getBoundingClientRect();
       const s = T.width / r.width, dx = T.left + T.width / 2 - (r.left + r.width / 2), dy = T.top + T.height / 2 - (r.top + r.height / 2);
       I.classList.add("out"); L.style.transform = `translate(${dx}px,${dy}px) scale(${s})`;
-      setTimeout(() => { I.remove(); document.body.style.overflow = ""; dispatchEvent(new Event("intro:done")); }, 1100); };
+      setTimeout(() => { I.remove(); document.body.style.overflow = ""; try { if (/[?&]intro/.test(location.search)) history.replaceState(null, "", location.pathname + location.hash); } catch (e) {} dispatchEvent(new Event("intro:done")); }, 1100); };
+    const play = async () => {
+      N.classList.add("typing"); await W(350); say("the studio");
+      const a = await type("Sameep Padora + Associates"); if (done) return;
+      await W(800); say("sP+a");
+      collapse(a.filter((s, i) => ![0, 7, 14, 16].includes(i))); swap(a[0], "s"); swap(a[16], "a");
+      await W(1100); if (done) return; say("+ research");
+      const sp = await type(" "); const r = await type("research", "r"); if (done) return;
+      await W(800); say("= sPare");
+      collapse([a[14], ...sp, ...r.slice(2)]);
+      await W(600); N.classList.remove("typing"); N.classList.add("done");
+      await W(3000); if (done) return;
+      I.classList.add("logo-on"); await W(1300); go(); };
     I.addEventListener("click", go); addEventListener("wheel", go, { once: true, passive: true }); addEventListener("keydown", go, { once: true }); addEventListener("touchmove", go, { once: true, passive: true });
-    setTimeout(go, 3600);
+    play();
   } else if (I) I.remove(); }
 
 // ---------- book viewer: click a cover to read inside ----------
 { const looks = $$("button.look"); if (looks.length) {
   const V = document.createElement("div"); V.id = "bv"; V.setAttribute("role", "dialog"); V.setAttribute("aria-modal", "true");
-  V.innerHTML = '<div class="bh"><b></b><span><span class="mono">Inside the book</span><button class="x" aria-label="Close">×</button></span></div><div class="tr"></div><div class="bf"><span class="cap"></span><span class="nav"><button class="pv" aria-label="Previous">←</button><span class="ct mono"></span><button class="nx" aria-label="Next">→</button></span></div><div class="bar"><i></i></div>';
+  V.dataset.cursor = "Close"; V.innerHTML = '<div class="bp"><div class="bh"><b></b><span><span class="mono">Inside the book</span><button class="x" aria-label="Close">Close <i>×</i></button></span></div><div class="tr"></div><div class="bf"><span class="cap"></span><span class="nav"><button class="pv" aria-label="Previous">←</button><span class="ct mono"></span><button class="nx" aria-label="Next">→</button></span></div><div class="bar"><i></i></div></div>';
   document.body.appendChild(V); const tr = $(".tr", V), cap = $(".cap", V), ct = $(".ct", V), bar = $(".bar i", V); let caps = [], n = 0, last = null;
   const at = () => Math.round(tr.scrollLeft / tr.clientWidth);
   const upd = () => { const i = Math.min(n - 1, at()); cap.textContent = caps[i] || ""; ct.textContent = `${i + 1} / ${n}`; bar.style.width = ((i + 1) / n * 100) + "%"; $$(".sl", tr).forEach((s, k) => { if (Math.abs(k - i) <= 1) { const im = $("img", s); if (!im.src) im.src = im.dataset.src; } if (k === i) s.classList.add("seen"); }); };
@@ -117,7 +136,8 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
     tr.scrollLeft = 0; V.classList.add("on"); document.documentElement.classList.add("bv-open"); upd(); setTimeout(() => $(".nx", V).focus(), 50); };
   const close = () => { V.classList.remove("on"); document.documentElement.classList.remove("bv-open"); last && last.focus(); };
   looks.forEach(b => b.addEventListener("click", () => open(b)));
-  $(".x", V).onclick = close; $(".pv", V).onclick = () => go(-1); $(".nx", V).onclick = () => go(1);
+  $(".x", V).onclick = close; V.addEventListener("click", e => { if (e.target === V) close(); });
+  { let y0 = null; const bp = $(".bp", V); bp.addEventListener("touchstart", e => { y0 = e.touches[0].clientY; }, { passive: true }); bp.addEventListener("touchend", e => { if (y0 !== null && e.changedTouches[0].clientY - y0 > 90) close(); y0 = null; }, { passive: true }); } $(".pv", V).onclick = () => go(-1); $(".nx", V).onclick = () => go(1);
   tr.addEventListener("scroll", () => requestAnimationFrame(upd), { passive: true });
   tr.addEventListener("wheel", e => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { e.preventDefault(); if (!tr._lock) { tr._lock = 1; go(e.deltaY > 0 ? 1 : -1); setTimeout(() => tr._lock = 0, 650); } } }, { passive: false });
   addEventListener("keydown", e => { if (!V.classList.contains("on")) return; if (e.key === "Escape") close(); if (e.key === "ArrowRight") go(1); if (e.key === "ArrowLeft") go(-1); });
@@ -131,3 +151,4 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
   addEventListener("keydown", e => { if (e.key === "Escape") set(false); });
   // keep header visible while menu open
   new MutationObserver(() => { if (h.classList.contains("open") && h.classList.contains("hide")) h.classList.remove("hide"); }).observe(h, { attributes: true, attributeFilter: ["class"] }); } }
+
