@@ -2,17 +2,18 @@
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-// ---------- page transitions: a paper sheet with the destination's name and a red line ----------
+// ---------- page transitions: a quick glitch (≈0.3 s out, ≈0.3 s in) ----------
 { const pt = document.createElement("div"); pt.id = "pt"; pt.setAttribute("aria-hidden", "true");
-  pt.innerHTML = '<div class="pt-pat"><img src="img/pat/hlines.svg" alt=""></div><span class="pt-k mono">sPare /</span><div class="pt-h"><span></span></div><i class="pt-bar"></i>';
-  document.body.appendChild(pt); const h = pt.querySelector(".pt-h span");
+  pt.innerHTML = '<div class="pt-h"><span></span></div><i class="pt-bar"></i>';
+  document.body.appendChild(pt); const h = pt.querySelector(".pt-h span"), hh = pt.querySelector(".pt-h");
   const nameFor = a => a.dataset.title || (a.querySelector("h3,b") || a).textContent.replace(/[→↗]/g, "").trim().slice(0, 40) || "sPare";
-  const prev = sessionStorage.getItem("pt"); sessionStorage.removeItem("pt");
-  if (prev && !RM) { h.textContent = prev; pt.classList.add("hold"); requestAnimationFrame(() => requestAnimationFrame(() => { pt.classList.remove("hold"); pt.classList.add("lift"); setTimeout(() => pt.className = "", 1100); })); }
+  const set = n => { h.textContent = n; hh.dataset.t = n; };
+  let prev = null; try { prev = sessionStorage.getItem("pt"); sessionStorage.removeItem("pt"); } catch (e) {}
+  if (prev && !RM) { set(prev); pt.className = "g out"; setTimeout(() => pt.className = "", 340); }
   document.addEventListener("click", e => { const a = e.target.closest("a[href]"); if (!a || RM || e.metaKey || e.ctrlKey || a.target === "_blank" || a.classList.contains("logo")) return;
     const u = new URL(a.href, location.href); if (u.origin !== location.origin || u.pathname === location.pathname || /^mailto:/.test(a.href)) return;
-    e.preventDefault(); const name = nameFor(a); h.textContent = name; sessionStorage.setItem("pt", name);
-    pt.className = ""; requestAnimationFrame(() => pt.classList.add("in")); setTimeout(() => location.href = a.href, 900); });
+    e.preventDefault(); set(nameFor(a)); try { sessionStorage.setItem("pt", nameFor(a)); } catch (er) {}
+    pt.className = "g in"; setTimeout(() => location.href = a.href, 260); });
   addEventListener("pageshow", e => { if (e.persisted) pt.className = ""; }); }
 
 // ---------- stroke-field texture (stand-in until the new texture image arrives) ----------
@@ -93,7 +94,7 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
 
 // ---------- landing: Sameep Padora + Associates → sP+a → + research → sPare → logo → header ----------
 { const I = document.getElementById("intro"); if (I && !document.documentElement.classList.contains("seen") && !RM) {
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = "hidden"; { const a = $(".in-art img", I); if (a && a.dataset.src) a.src = a.dataset.src; }
     const N = $(".nm", I), Lt = $(".nm-l", N), cap = $(".nm-c", N), W = ms => new Promise(r => setTimeout(r, ms));
     let done = false;
     const mk = (ch, cls = "") => { const s = document.createElement("span"); s.className = "c " + cls; s.textContent = ch; return s; };
