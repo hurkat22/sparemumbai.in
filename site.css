@@ -345,7 +345,7 @@ header{align-items:center;padding-top:10px}
 #intro.out .in-art,#intro.out .in-k,#intro.out .in-skip{opacity:0;transition:opacity .4s ease}
 #intro.out .in-logo{transition:transform .9s cubic-bezier(.65,0,.25,1)}
 html.seen #intro{display:none}
-@media (prefers-reduced-motion:reduce){#intro{display:none}}
+
 
 /* v8: quieter hero art, plain nav */
 header nav{display:flex;gap:clamp(16px,2vw,30px)}

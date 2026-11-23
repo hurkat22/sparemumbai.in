@@ -45,7 +45,7 @@ $$("[data-type]").forEach(h => { const h1 = $("h1", h) || h, cur = document.crea
   walk(h1);
   if (RM) { chs.forEach(c => c.classList.add("v")); h.classList.add("done"); return; }
   let k = 0; const go = () => { if (k < chs.length) { const c = chs[k++]; c.classList.add("v"); c.after(cur); const ch = c.textContent; setTimeout(go, ch === " " ? 40 : ch === "." || ch === "," ? 160 : 16 + Math.random() * 22); } else h.classList.add("done"); };
-  const waitI = document.getElementById("intro") && !document.documentElement.classList.contains("seen") && !RM;
+  const waitI = document.getElementById("intro") && !document.documentElement.classList.contains("seen");
   if (waitI) { const st = () => setTimeout(go, 700); addEventListener("intro:done", st, { once: true }); } else setTimeout(go, 150); });
 
 // ---------- count-up numbers ([data-count]) ----------
@@ -89,7 +89,7 @@ $$(".book .cv:not(.img)").forEach(cv => { cv.addEventListener("mousemove", e => 
   el.innerHTML = `${String(h).padStart(2, "0")}<span class="c">:</span>${String(m).padStart(2, "0")} ${ap} · Mumbai`; }; f(); setInterval(f, 20000); } }
 
 // ---------- landing: Sameep Padora + Associates → sP+a → + research → sPare → logo → header ----------
-{ const I = document.getElementById("intro"); if (I && !document.documentElement.classList.contains("seen") && !RM) {
+{ const I = document.getElementById("intro"); if (I && !document.documentElement.classList.contains("seen")) {
     document.body.style.overflow = "hidden"; { const a = $(".in-art img", I); if (a && a.dataset.src) a.src = a.dataset.src; }
     const N = $(".nm", I), Lt = $(".nm-l", N), cap = $(".nm-c", N), W = ms => new Promise(r => setTimeout(r, ms));
     let done = false;
